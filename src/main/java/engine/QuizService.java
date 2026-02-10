@@ -1,46 +1,42 @@
 package engine;
 
-import engine.dto.QuizQuestionRequest;
+import engine.dto.QuizQuestionDTO;
 import engine.model.QuizQuestion;
+import engine.repository.QuizQuestionRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
+import java.util.stream.StreamSupport;
+
 
 @Service
 public class QuizService {
-    private final Map<Integer, QuizQuestion> quizMap;
-    private final AtomicInteger idCounter;
+    private final QuizQuestionRepository repository;
+    private final DtoMapper mapper;
 
-    public QuizService() {
-        this.quizMap = new ConcurrentHashMap<>();
-        this.idCounter = new AtomicInteger(1);
+    public QuizService(QuizQuestionRepository repository, DtoMapper mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
     }
 
-    public QuizQuestion addQuizQuestion(QuizQuestionRequest request) {
-        int newId = idCounter.getAndIncrement();
-        QuizQuestion question = new QuizQuestion(newId, request);
-        quizMap.put(newId, question);
-        return question;
+    public QuizQuestion addQuizQuestion(QuizQuestion quizQuestion) {
+        return repository.save(quizQuestion);
     }
 
-    public QuizQuestion getQuizQuestion(int id) {
-        return quizMap.getOrDefault(id, null);
+    public QuizQuestionDTO getQuizQuestionDTO(Integer id) throws NoSuchElementException{
+        return mapper.toDto(getQuizQuestion(id));
     }
 
-    public List<QuizQuestion> getAllQuizQuestion() {
-        return new ArrayList<>(quizMap.values());
+    public QuizQuestion getQuizQuestion(Integer id) throws NoSuchElementException{
+        return repository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
-    public QuizQuestion updateQuizQuestion(int id, QuizQuestionRequest request) {
-        QuizQuestion question = new QuizQuestion(id, request);
-        return quizMap.replace(id, question);
+    public List<QuizQuestionDTO> getAllQuizQuestion() {
+        return StreamSupport.stream(repository.findAll().spliterator(), false)
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
 
-    public void deleteQuizQuestion(int id) {
-        quizMap.remove(id);
-    }
 }
