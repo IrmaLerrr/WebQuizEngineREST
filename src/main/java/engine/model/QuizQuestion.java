@@ -1,8 +1,6 @@
 package engine.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,14 +19,10 @@ public class QuizQuestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @NotEmpty
     String text;
 
-    @NotEmpty
     String title;
 
-    @NotEmpty
-    @Size(min = 2)
     @ElementCollection(fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     List<String> options;
@@ -36,6 +30,8 @@ public class QuizQuestion {
     @ElementCollection(fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     List<Integer> answer;
+
+    String author;
 
     public List<Integer> getAnswer() {
         return answer != null ? answer : Collections.emptyList();

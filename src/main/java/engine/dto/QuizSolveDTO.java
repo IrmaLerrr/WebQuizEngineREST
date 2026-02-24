@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuizQuestionDTO {
+public class QuizSolveDTO {
     Integer id;
     String title;
     String text;

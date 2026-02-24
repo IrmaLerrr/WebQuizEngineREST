@@ -1,0 +1,11 @@
+package engine.repository;
+
+import engine.model.AppUser;
+import org.springframework.data.repository.CrudRepository;
+
+import java.util.Optional;
+
+public interface AppUserRepository extends CrudRepository<AppUser, Integer> {
+    Optional<AppUser> findAppUserByUsername(String username);
+    boolean existsByUsername(String username);
+}
