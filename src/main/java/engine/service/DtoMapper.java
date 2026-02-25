@@ -2,8 +2,10 @@ package engine.service;
 
 
 import engine.dto.QuizCreateDTO;
+import engine.dto.QuizResultDTO;
 import engine.dto.QuizSolveDTO;
 import engine.model.QuizQuestion;
+import engine.model.QuizResult;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -23,5 +25,9 @@ public class DtoMapper {
 
     QuizSolveDTO toDto(QuizQuestion entity) {
         return modelMapper.map(entity, QuizSolveDTO.class);
+    }
+
+    QuizResultDTO toDto(QuizResult entity) {
+        return modelMapper.map(entity, QuizResultDTO.class);
     }
 }
